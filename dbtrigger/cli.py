@@ -29,3 +29,36 @@ class ServerCli:
         settings.del_server(server)
 
         cls.list()
+
+    @classmethod
+    def update(cls, identifier: str, hostname: str=None, dialect: str=None, port: str=None):
+        if identifier not in settings.servers:
+            raise ValueError('No server with this identifier')
+
+        server = settings.servers[identifier]
+        kwargs = {
+            'hostname': hostname or server.hostname,
+            'dialect': dialect or server.dialect,
+            'port': port or server.port
+        }
+        updated_server = Server.from_config(identifier, **kwargs)
+        settings.set_server(updated_server)
+
+        cls.list()
+
+    @classmethod
+    def rename(cls, identifier: str, new_identifier):
+        if identifier not in settings.servers:
+            raise ValueError('No server with this identifier')
+
+        server = settings.servers[identifier]
+        kwargs = {
+            'hostname': server.hostname,
+            'dialect': server.dialect,
+            'port': server.port
+        }
+        updated_server = Server.from_config(new_identifier, **kwargs)
+        settings.set_server(updated_server)
+        settings.del_server(server)
+
+        cls.list()
