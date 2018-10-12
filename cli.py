@@ -2,10 +2,8 @@
 
 import fire
 
-from dbtrigger.cli import ServerCli
+from dbtrigger.cli import cli
 
 
 if __name__ == '__main__':
-    fire.Fire({
-        'server': ServerCli()
-    })
+    fire.Fire(cli)
