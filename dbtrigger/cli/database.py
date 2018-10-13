@@ -21,11 +21,13 @@ class DatabaseCli:
             print("{}\t{}".format(i, identifier))
 
     @classmethod
-    def add(cls, identifier: str, server: str, username: Optional[str]=None, password: Optional[str]=None) -> None:
+    def add(cls, identifier: str, server: str, name: str,
+            username: Optional[str]=None, password: Optional[str]=None) -> None:
         """
         Create a new database.
         :param identifier: a unique identifier for the database to create
         :param server: identifier of the server to link the database to
+        :param name: name of the database
         :param username: the username to use to connect to this database
         :param password: the password to use to connect to this database
         """
@@ -34,7 +36,7 @@ class DatabaseCli:
         if server not in settings.servers:
             raise ValueError('No server with this identifier')
         server = settings.servers[server]
-        database = Database.from_config(identifier, server=server, username=username, password=password)
+        database = Database.from_config(identifier, server=server, name=name, username=username, password=password)
         settings.set_database(database)
 
     @classmethod
@@ -49,12 +51,13 @@ class DatabaseCli:
         settings.del_database(database)
 
     @classmethod
-    def update(cls, identifier: str, server: Optional[str]=None,
+    def update(cls, identifier: str, server: Optional[str]=None, name: Optional[str]=None,
                username: Optional[str]=None, password: Optional[str]=None) -> None:
         """
         Update an existing database. Only set fields you want to change.
         :param identifier: the identifier associated to the database to update
         :param server: the new server to link to this database
+        :param name: the new name of this database
         :param username: the new username to use for this database
         :param password: the new password to use for this database
         """
@@ -68,6 +71,7 @@ class DatabaseCli:
         database = settings.databases[identifier]
         kwargs = {
             'server': server or database.server,
+            'name': name or database.name,
             'username': username or database.username,
             'password': password or database.password
         }
@@ -87,6 +91,7 @@ class DatabaseCli:
         database = settings.databases[identifier]
         kwargs = {
             'server': database.server,
+            'name': database.name,
             'username': database.username,
             'password': database.password
         }

@@ -11,11 +11,13 @@ class Database:
         self,
         identifier: str,
         server: Server,
+        name: str,
         username: Optional[str]=None,
         password: Optional[str]=None,
     ):
         self.identifier = identifier
         self.server = server
+        self.name = name
         self.username = username
         self.password = password
 
@@ -32,6 +34,7 @@ class Database:
     def to_config(self):
         return {
             'server': self.server.identifier,
+            'name': self.name,
             'username': self.username,
             'password': self.password,
         }

@@ -12,9 +12,8 @@ from .models import Server, Database
 
 class Settings:
 
-    CONFIG_BASE_PATH = appdirs.user_data_dir('dbtrigger')
-
-    def __init__(self):
+    def __init__(self, base_path):
+        self.CONFIG_BASE_PATH = base_path
         self._config = {}
         self.load_config()
 
@@ -95,4 +94,4 @@ class Settings:
         return self._config['databases']
 
 
-settings = Settings()
+settings = Settings(appdirs.user_config_dir('dbtrigger'))
