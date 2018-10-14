@@ -6,6 +6,7 @@ from dbtrigger.models import Dialect
 
 
 def test_add_server():
+
     assert len(settings.servers) == 0
 
     identifier = 'server1'

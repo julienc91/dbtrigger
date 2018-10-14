@@ -5,12 +5,17 @@ import sys
 import json
 import logging
 
-import appdirs
-
-from .models import Server, Database
+from ..models import Server, Database
 
 
 class Settings:
+
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
     def __init__(self, base_path):
         self.CONFIG_BASE_PATH = base_path
@@ -18,6 +23,7 @@ class Settings:
         self.load_config()
 
     def load_config(self):
+        self._config = {}
         try:
             with open(os.path.join(self.CONFIG_BASE_PATH, 'config.json'), 'rb') as f:
                 config = f.read()
@@ -92,6 +98,3 @@ class Settings:
     @property
     def databases(self):
         return self._config['databases']
-
-
-settings = Settings(appdirs.user_config_dir('dbtrigger'))
