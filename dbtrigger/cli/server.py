@@ -84,6 +84,8 @@ class ServerCli:
         """
         if identifier not in settings.servers:
             raise ValueError('No server with this identifier')
+        if new_identifier in settings.servers:
+            raise ValueError('Another server already exists with this identifier')
 
         server = settings.servers[identifier]
         kwargs = {
