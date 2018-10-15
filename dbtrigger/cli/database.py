@@ -87,6 +87,8 @@ class DatabaseCli:
         """
         if identifier not in settings.databases:
             raise ValueError('No server with this identifier')
+        if new_identifier in settings.databases:
+            raise ValueError('Another database already exists with this identifier')
 
         database = settings.databases[identifier]
         kwargs = {

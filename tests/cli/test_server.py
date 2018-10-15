@@ -4,14 +4,9 @@ import uuid
 
 import pytest
 
-from dbtrigger.cli.server import ServerCli
+from dbtrigger.cli.server import DatabaseCli, ServerCli
 from dbtrigger.config import settings
 from dbtrigger.models import Dialect, Server
-
-
-@pytest.fixture()
-def server():
-    return Server(str(uuid.uuid4()), 'example.com', Dialect.sqlite)
 
 
 def compare_servers(server1, server2):
@@ -21,7 +16,7 @@ def compare_servers(server1, server2):
     return True
 
 
-def test_lsit(server):
+def test_list(server):
     ServerCli.add(server.identifier, server.hostname, server.dialect.name)
     ServerCli.list()
 
@@ -34,9 +29,7 @@ def test_add_server(server):
     assert len(settings.servers) == 0
     ServerCli.add(server.identifier, server.hostname, server.dialect.name)
     assert len(settings.servers) == 1
-
-    added_server = settings.servers[server.identifier]
-    assert compare_servers(server, added_server)
+    assert compare_servers(server, settings.servers[server.identifier])
 
 
 def test_add_server_duplicate(server):
@@ -50,6 +43,17 @@ def test_delete_server(server):
     ServerCli.add(server.identifier, server.hostname, server.dialect.name)
     ServerCli.delete(server.identifier)
     assert len(settings.servers) == 0
+
+
+def test_delete_server_with_database(server, database):
+    ServerCli.add(server.identifier, server.hostname, server.dialect.name)
+    DatabaseCli.add(database.identifier, server.identifier, database.name, database.username, database.password)
+    assert len(settings.servers) == 1
+    assert len(settings.databases) == 1
+
+    ServerCli.delete(server.identifier)
+    assert len(settings.servers) == 0
+    assert len(settings.databases) == 0
 
 
 def test_delete_server_not_existing(server):
@@ -69,9 +73,8 @@ def test_update_server(server):
 
 
 def test_update_server_not_existing(server):
-    updated_server = Server(server.identifier, 'example.org', Dialect.postgresql)
     with pytest.raises(ValueError):
-        ServerCli.update(server.identifier, updated_server.hostname, updated_server.dialect.name)
+        ServerCli.update(server.identifier, 'new hostname', Dialect.mysql.name)
 
 
 def test_rename_server(server):
@@ -84,6 +87,18 @@ def test_rename_server(server):
     renamed_server = settings.servers[new_identifier]
     server.identifier = new_identifier
     assert compare_servers(server, renamed_server)
+
+
+def test_rename_server_with_database(server, database):
+    ServerCli.add(server.identifier, server.hostname, server.dialect.name)
+    DatabaseCli.add(database.identifier, server.identifier, database.name, database.username, database.password)
+
+    new_identifier = str(uuid.uuid4())
+    ServerCli.rename(server.identifier, new_identifier)
+    assert len(settings.servers) == 1
+    assert len(settings.databases) == 1
+
+    assert settings.databases[database.identifier].server.identifier == new_identifier
 
 
 def test_rename_server_not_existing(server):
