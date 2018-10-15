@@ -11,4 +11,3 @@ def settings(monkeypatch, tmpdir):
     dbtrigger.config.settings.load_config()
     yield
     dbtrigger.config.settings.load_config()
-
