@@ -5,7 +5,7 @@ import sys
 import json
 import logging
 
-from ..models import Server, Database
+from ..models import Database, Query, Server
 
 
 class Settings:
@@ -35,13 +35,14 @@ class Settings:
             config = json.loads(config)
             self._load_servers(config)
             self._load_databases(config)
+            self._load_queries(config)
             self._config['triggers'] = config.get('triggers', {})
             self._config['reports'] = config.get('reports', {})
-            self._config['queries'] = config.get('queries', {})
         except ValueError:
             logging.warning('Invalid config file')
             sys.exit(2)
 
+    # --- servers ---
     def _load_servers(self, config):
         self._config['servers'] = {identifier: Server.from_config(identifier, **data)
                                    for identifier, data in config.get('servers', {}).items()}
@@ -54,6 +55,7 @@ class Settings:
         del self._config['servers'][server.identifier]
         self.save()
 
+    # --- databases ---
     def _load_databases(self, config):
         self._config['databases'] = {}
         for identifier, data in config.get('databases', {}).items():
@@ -73,6 +75,26 @@ class Settings:
         del self._config['databases'][database.identifier]
         self.save()
 
+    # --- queries ---
+    def _load_queries(self, config):
+        self._config['queries'] = {}
+        for identifier, data in config.get('queries', {}).items():
+            try:
+                database = self._config['databases'][data['database']]
+            except KeyError:
+                logging.warning('Invalid config file')
+                sys.exit(2)
+            data['database'] = database
+            self._config['queries'][identifier] = Query.from_config(identifier, **data)
+
+    def set_query(self, query: Query):
+        self._config['queries'][query.identifier] = query
+        self.save()
+
+    def del_query(self, query: Query):
+        del self._config['queries'][query.identifier]
+        self.save()
+
     def save(self):
         os.makedirs(self.CONFIG_BASE_PATH, exist_ok=True)
         raw_config = json.dumps({
@@ -84,9 +106,12 @@ class Settings:
                 identifier: database.to_config()
                 for identifier, database in self._config['databases'].items()
             },
+            'queries': {
+                identifier: query.to_config()
+                for identifier, query in self._config['queries'].items()
+            },
             'triggers': self._config['triggers'],
             'reports': self._config['reports'],
-            'queries': self._config['queries'],
         })
         with open(os.path.join(self.CONFIG_BASE_PATH, 'config.json'), 'w') as f:
             f.write(raw_config)
@@ -98,3 +123,7 @@ class Settings:
     @property
     def databases(self):
         return self._config['databases']
+
+    @property
+    def queries(self):
+        return self._config['queries']

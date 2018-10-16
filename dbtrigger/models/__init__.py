@@ -2,6 +2,7 @@
 
 from .database import Database
 from .dialect import Dialect
+from .query import Query
 from .server import Server
 
-__all__ = ['Dialect', 'Server', 'Database']
+__all__ = ['Dialect', 'Query', 'Server', 'Database']
