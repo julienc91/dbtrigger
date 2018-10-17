@@ -30,6 +30,3 @@ class Query:
             'database': self.database.identifier,
             'query': self.query,
         }
-
-    def run(self):
-        raise NotImplementedError

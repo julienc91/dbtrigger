@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from ..config import settings
+from ..core import run
 from ..models import Query
 
 
@@ -76,5 +77,6 @@ class QueryCli:
             raise ValueError('No query with this identifier')
 
         query = settings.queries[identifier]
-        res = query.run()
-        print(res)
+        res = run(query)
+        for row in res:
+            print(row)
