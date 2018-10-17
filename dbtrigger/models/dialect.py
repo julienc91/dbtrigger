@@ -20,11 +20,11 @@ class Dialect(Enum):
 
 
 try:
-    import pymysql
+    import pymysql  # noqa F401
 except ImportError:
     unavailable_dialects[Dialect.mysql] = "Please install PyMySQL to enable MySQL dialect"
 
 try:
-    import psycopg2
+    import psycopg2  # noqa F401
 except ImportError:
     unavailable_dialects[Dialect.postgresql] = "Please install psycopg2 to enable PostgreSQL dialect"

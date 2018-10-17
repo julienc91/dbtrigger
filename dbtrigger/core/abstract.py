@@ -13,16 +13,13 @@ class Runner:
         self.server = query.database.server
 
     @abstractmethod
-    def connect(self):
-        pass
+    def connect(self): pass
 
     @abstractmethod
-    def execute(self):
-        pass
+    def execute(self): pass
 
     @abstractmethod
-    def disconnect(self):
-        pass
+    def disconnect(self): pass
 
     def run(self):
         self.connect()

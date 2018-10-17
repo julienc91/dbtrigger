@@ -6,7 +6,7 @@ import pytest
 
 from dbtrigger.cli.server import DatabaseCli, ServerCli
 from dbtrigger.config import settings
-from dbtrigger.models import Database, Dialect, Server
+from dbtrigger.models import Database
 
 
 @pytest.fixture(autouse=True)
