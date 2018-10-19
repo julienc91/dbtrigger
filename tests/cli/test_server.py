@@ -4,7 +4,7 @@ import uuid
 
 import pytest
 
-from dbtrigger.cli.server import DatabaseCli, ServerCli
+from dbtrigger.cli import DatabaseCli, ServerCli
 from dbtrigger.config import settings
 from dbtrigger.models import Dialect, Server
 
