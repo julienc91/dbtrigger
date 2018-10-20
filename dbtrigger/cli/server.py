@@ -46,7 +46,7 @@ class ServerCli:
         server = settings.servers[identifier]
 
         # delete linked databases
-        databases_to_delete = [database for _, database in settings.databases.items()
+        databases_to_delete = [database for database in settings.databases.values()
                                if database.server.identifier == server.identifier]
         for database in databases_to_delete:
             DatabaseCli.delete(database.identifier)

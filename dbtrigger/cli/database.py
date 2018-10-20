@@ -4,6 +4,7 @@ from typing import Optional
 
 from ..config import settings
 from ..models import Database
+from .query import QueryCli
 
 
 class DatabaseCli:
@@ -48,6 +49,13 @@ class DatabaseCli:
         if identifier not in settings.databases:
             raise ValueError('No database with this identifier')
         database = settings.databases[identifier]
+
+        # delete linked queries
+        queries_to_delete = [query for query in settings.queries.values()
+                             if query.database.identifier == database.identifier]
+        for query in queries_to_delete:
+            QueryCli.delete(query.identifier)
+
         settings.del_database(database)
 
     @classmethod
@@ -99,4 +107,12 @@ class DatabaseCli:
         }
         updated_database = Database.from_config(new_identifier, **kwargs)
         settings.set_database(updated_database)
+
+        # update linked queries
+        queries_to_update = [query for query in settings.queries.items()
+                             if query.database.identifier == database.identifier]
+        for query in queries_to_update:
+            QueryCli.delete(query.identifier)
+            QueryCli.add(query.identifier, updated_database.identifier, query.query)
+
         settings.del_database(database)
