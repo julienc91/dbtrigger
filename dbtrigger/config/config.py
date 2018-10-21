@@ -25,7 +25,7 @@ class Settings:
     def load_config(self):
         self._config = {}
         try:
-            with open(os.path.join(self.CONFIG_BASE_PATH, 'config.json'), 'rb') as f:
+            with open(os.path.join(self.CONFIG_BASE_PATH, 'config.json'), 'r') as f:
                 config = f.read()
         except IOError:
             os.makedirs(self.CONFIG_BASE_PATH, exist_ok=True)
