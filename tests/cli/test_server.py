@@ -65,7 +65,7 @@ def test_delete_server_not_existing(server):
 
 def test_update_server(server):
     ServerCli.add(server.identifier, server.hostname, server.dialect.name)
-    updated_server = Server(server.identifier, 'example.org', Dialect.sqlite)
+    updated_server = Server(server.identifier, 'example.org', Dialect.postgresql)
 
     ServerCli.update(server.identifier, updated_server.hostname, updated_server.dialect.name)
     assert len(settings.servers) == 1
