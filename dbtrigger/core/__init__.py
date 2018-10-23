@@ -8,6 +8,9 @@ def run(query):
     if dialect == Dialect.sqlite:
         from .sqlite import SqliteRunner
         runner = SqliteRunner
+    elif dialect == Dialect.postgresql:
+        from .postgresql import PostgresqlRunner
+        runner = PostgresqlRunner
     else:
         raise NotImplementedError
 
