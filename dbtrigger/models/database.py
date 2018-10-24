@@ -22,7 +22,13 @@ class Database:
         self.password = password
 
     def __str__(self):
-        return self.identifier
+        res = f"{self.identifier}\t{self.server.dialect.name}://"
+        if self.username:
+            res += f"{self.username}@"
+        res += f"{self.server.hostname}"
+        if self.server.port:
+            res += f":{self.server.port}"
+        return res + f"/{self.name}"
 
     def __repr__(self):
         return self.identifier

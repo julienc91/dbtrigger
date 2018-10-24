@@ -16,7 +16,7 @@ class Query:
         self.query = query
 
     def __str__(self):
-        return self.identifier
+        return f"{self.identifier}\t{self.database.identifier}: {self.query}"
 
     def __repr__(self):
         return self.identifier

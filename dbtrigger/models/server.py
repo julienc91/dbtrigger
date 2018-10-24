@@ -25,7 +25,9 @@ class Server:
         self._parse_dialect()
 
     def __str__(self):
-        return self.identifier
+        if self.port:
+            return f"{self.identifier}\t{self.dialect.name}://{self.hostname}"
+        return f"{self.identifier}\t{self.dialect.name}://{self.hostname}:{self.port}"
 
     def __repr__(self):
         return self.identifier

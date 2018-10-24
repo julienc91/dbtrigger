@@ -19,7 +19,7 @@ class ServerCli:
         """
         keys = sorted(settings.servers.keys())
         for i, identifier in enumerate(keys, start=1):
-            print("{}\t{}".format(i, identifier))
+            print("{}\t{}".format(i, str(settings.servers[identifier])))
 
     @classmethod
     def add(cls, identifier: str, hostname: str, dialect: str, port: Optional[int]=None) -> None:

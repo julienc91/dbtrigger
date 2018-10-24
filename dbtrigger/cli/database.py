@@ -19,7 +19,7 @@ class DatabaseCli:
         """
         keys = sorted(settings.databases.keys())
         for i, identifier in enumerate(keys, start=1):
-            print("{}\t{}".format(i, identifier))
+            print("{}\t{}".format(i, settings.databases[identifier]))
 
     @classmethod
     def add(cls, identifier: str, server: str, name: str,

@@ -17,7 +17,7 @@ class QueryCli:
         """
         keys = sorted(settings.queries.keys())
         for i, identifier in enumerate(keys, start=1):
-            print("{}\t{}".format(i, identifier))
+            print("{}\t{}".format(i, settings.queries[identifier]))
 
     @classmethod
     def add(cls, identifier: str, database: str, query: str) -> None:
