@@ -2,7 +2,7 @@
 
 import pytest
 
-from dbtrigger.core.postgresql import PostgresqlRunner
+from dbtrigger.core.mysql import MysqlRunner
 from dbtrigger.models import Dialect
 
 
@@ -12,9 +12,9 @@ def expected_res():
 
 
 @pytest.fixture(autouse=True)
-def postgresql_mock(monkeypatch, expected_res):
+def mysql_mock(monkeypatch, expected_res):
 
-    class PostgresqlMock:
+    class MysqlMock:
 
         def __init__(self):
             self.connected = True
@@ -50,18 +50,18 @@ def postgresql_mock(monkeypatch, expected_res):
             assert self.query
             yield from expected_res
 
-    mock = PostgresqlMock()
-    monkeypatch.setattr('psycopg2.connect', lambda **_: mock)
+    mock = MysqlMock()
+    monkeypatch.setattr('pymysql.connect', lambda **_: mock)
     return mock
 
 
-def test_postgresql_runner(postgresql_mock, query, expected_res):
-    query.dialect = Dialect.postgresql
+def test_mysql_runner(mysql_mock, query, expected_res):
+    query.dialect = Dialect.mysql
 
-    res = PostgresqlRunner(query).run()
+    res = MysqlRunner(query).run()
     for row, expected in zip(res, expected_res):
         assert row == expected
 
-    assert postgresql_mock._cursor.query == query.query
-    assert not postgresql_mock._cursor.open
-    assert not postgresql_mock.connected
+    assert mysql_mock._cursor.query == query.query
+    assert not mysql_mock._cursor.open
+    assert not mysql_mock.connected

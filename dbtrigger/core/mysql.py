@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import psycopg2
+import pymysql
 
 from .abstract import Runner
 from ..models import Query
 
 
-class PostgresqlRunner(Runner):
+class MysqlRunner(Runner):
 
     def __init__(self, query: Query):
         super().__init__(query)
         self._conn = None
 
     def connect(self):
-        self._conn = psycopg2.connect(
+        self._conn = pymysql.connect(
             host=self.server.hostname,
             port=self.server.port,
             database=self.database.name,
@@ -29,5 +29,5 @@ class PostgresqlRunner(Runner):
     def disconnect(self):
         try:
             self._conn.close()
-        except psycopg2.Error:
+        except pymysql.MySQLError:
             pass

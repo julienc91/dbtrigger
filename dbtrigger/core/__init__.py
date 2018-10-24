@@ -11,6 +11,9 @@ def run(query):
     elif dialect == Dialect.postgresql:
         from .postgresql import PostgresqlRunner
         runner = PostgresqlRunner
+    elif dialect == Dialect.mysql:
+        from .mysql import MysqlRunner
+        runner = MysqlRunner
     else:
         raise NotImplementedError
 
