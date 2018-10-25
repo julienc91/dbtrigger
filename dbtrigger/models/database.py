@@ -30,9 +30,6 @@ class Database:
             res += f":{self.server.port}"
         return res + f"/{self.name}"
 
-    def __repr__(self):
-        return self.identifier
-
     @classmethod
     def from_config(cls, identifier, **config):
         return cls(identifier=identifier, **config)

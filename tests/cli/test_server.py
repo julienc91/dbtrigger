@@ -3,6 +3,7 @@
 import uuid
 
 import pytest
+from unittest.mock import MagicMock
 
 from dbtrigger.cli import DatabaseCli, ServerCli
 from dbtrigger.config import settings
@@ -37,6 +38,12 @@ def test_add_server_duplicate(server):
     with pytest.raises(ValueError):
         ServerCli.add(server.identifier, server.hostname, server.dialect.name)
     assert len(settings.servers) == 1
+
+
+def test_add_server_unavailable_dialect(monkeypatch, server):
+    monkeypatch.setattr('dbtrigger.models.dialect.Dialect.mysql.assert_available', MagicMock(side_effect=ValueError))
+    with pytest.raises(ValueError):
+        ServerCli.add(server.identifier, server.hostname, Dialect.mysql.name)
 
 
 def test_delete_server(server):
@@ -75,6 +82,14 @@ def test_update_server(server):
 def test_update_server_not_existing(server):
     with pytest.raises(ValueError):
         ServerCli.update(server.identifier, 'new hostname', Dialect.mysql.name)
+
+
+def test_update_serer_unavailable_dialect(monkeypatch, server):
+    ServerCli.add(server.identifier, server.hostname, server.dialect.name)
+    monkeypatch.setattr('dbtrigger.models.dialect.Dialect.mysql.assert_available', MagicMock(side_effect=ValueError))
+    with pytest.raises(ValueError):
+        ServerCli.update(server.identifier, server.hostname, Dialect.mysql.name)
+
 
 
 def test_rename_server(server):

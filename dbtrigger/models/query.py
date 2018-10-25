@@ -18,9 +18,6 @@ class Query:
     def __str__(self):
         return f"{self.identifier}\t{self.database.identifier}: {self.query}"
 
-    def __repr__(self):
-        return self.identifier
-
     @classmethod
     def from_config(cls, identifier, **config):
         return cls(identifier=identifier, **config)
