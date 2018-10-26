@@ -91,7 +91,6 @@ def test_update_serer_unavailable_dialect(monkeypatch, server):
         ServerCli.update(server.identifier, server.hostname, Dialect.mysql.name)
 
 
-
 def test_rename_server(server):
     ServerCli.add(server.identifier, server.hostname, server.dialect.name)
     new_identifier = str(uuid.uuid4())
