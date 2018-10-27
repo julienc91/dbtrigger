@@ -84,7 +84,7 @@ def test_update_server_not_existing(server):
         ServerCli.update(server.identifier, 'new hostname', Dialect.mysql.name)
 
 
-def test_update_serer_unavailable_dialect(monkeypatch, server):
+def test_update_server_unavailable_dialect(monkeypatch, server):
     ServerCli.add(server.identifier, server.hostname, server.dialect.name)
     monkeypatch.setattr('dbtrigger.models.dialect.Dialect.mysql.assert_available', MagicMock(side_effect=ValueError))
     with pytest.raises(ValueError):

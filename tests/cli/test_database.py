@@ -4,7 +4,7 @@ import uuid
 
 import pytest
 
-from dbtrigger.cli import DatabaseCli, ServerCli
+from dbtrigger.cli import DatabaseCli, QueryCli, ServerCli
 from dbtrigger.config import settings
 from dbtrigger.models import Database
 
@@ -58,6 +58,17 @@ def test_delete_database(database, server):
     assert len(settings.databases) == 0
 
 
+def test_delete_database_with_queries(database, server, query):
+    DatabaseCli.add(database.identifier, server.identifier, database.name, database.username, database.password)
+    QueryCli.add(query.identifier, database.identifier, query.query)
+    assert len(settings.databases) == 1
+    assert len(settings.queries) == 1
+
+    DatabaseCli.delete(database.identifier)
+    assert len(settings.databases) == 0
+    assert len(settings.queries) == 0
+
+
 def test_delete_database_not_existing(database, server):
     DatabaseCli.add(database.identifier, server.identifier, database.name, database.username, database.password)
     DatabaseCli.delete(database.identifier)
@@ -86,6 +97,18 @@ def test_rename_database(database, server):
     renamed_db = settings.databases[new_identifier]
     database.identifier = new_identifier
     assert compare_databases(database, renamed_db)
+
+
+def test_rename_database_with_queries(database, server, query):
+    DatabaseCli.add(database.identifier, server.identifier, database.name, database.username, database.password)
+    QueryCli.add(query.identifier, database.identifier, query.query)
+
+    new_identifier = str(uuid.uuid4())
+    DatabaseCli.rename(database.identifier, new_identifier)
+    assert len(settings.databases) == 1
+    assert len(settings.queries) == 1
+
+    assert settings.queries[query.identifier].database.identifier == new_identifier
 
 
 def test_rename_database_not_existing(database):

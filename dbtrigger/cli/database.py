@@ -109,7 +109,7 @@ class DatabaseCli:
         settings.set_database(updated_database)
 
         # update linked queries
-        queries_to_update = [query for query in settings.queries.items()
+        queries_to_update = [query for query in settings.queries.values()
                              if query.database.identifier == database.identifier]
         for query in queries_to_update:
             QueryCli.delete(query.identifier)
